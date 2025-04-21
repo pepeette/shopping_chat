@@ -1,0 +1,16 @@
+product_id,name,type,price_gbp,installation,capacity_liters,filtration_type,remineralization,removes_chlorine,removes_lead,removes_fluoride,removes_bacteria,ecofriendly_rating,maintenance_cost_yearly_gbp,filter_lifespan_months,dimensions_cm,weight_kg,warranty_years,amazon_url
+1,AquaPure RO System,reverse_osmosis,199.99,under_sink,75,RO,yes,yes,yes,yes,yes,3,65,6,"40x20x45",12,2,https://amazon.co.uk/aquapure-ro
+2,ClearStream Pitcher,pitcher,34.99,countertop,2.5,carbon,no,yes,partial,no,no,4,25,2,"25x15x30",1.2,1,https://amazon.co.uk/clearstream-pitcher
+3,PureFlow Countertop,countertop,129.99,countertop,8,multi-stage,yes,yes,yes,partial,yes,4,45,3,"30x20x40",3.5,2,https://amazon.co.uk/pureflow-countertop
+4,HydroMax Pro RO,reverse_osmosis,349.99,under_sink,100,RO,yes,yes,yes,yes,yes,3,80,12,"45x25x50",15,5,https://amazon.co.uk/hydromax-pro
+5,PureDrop Portable,portable,24.99,portable,0.75,carbon,no,yes,no,no,no,5,20,1,"15x8x20",0.5,1,https://amazon.co.uk/puredrop-portable
+6,AquaFresh Alkaline,countertop,149.99,countertop,10,multi-stage,yes,yes,yes,partial,partial,4,50,4,"35x25x45",4.2,2,https://amazon.co.uk/aquafresh-alkaline
+7,CleanWater Basic,under_sink,89.99,under_sink,50,carbon,no,yes,partial,no,no,4,30,6,"30x15x35",5,1,https://amazon.co.uk/cleanwater-basic
+8,PureStream UV,countertop,199.99,countertop,5,UV-carbon,no,yes,yes,no,yes,3,60,6,"28x18x38",2.8,2,https://amazon.co.uk/purestream-uv
+9,EcoFilter Shower,shower,39.99,shower,NA,KDF-carbon,no,yes,partial,no,no,5,25,3,"15x10x8",0.8,1,https://amazon.co.uk/ecofilter-shower
+10,AquaLife Whole House,whole_house,499.99,whole_house,500,multi-stage,no,yes,yes,partial,partial,2,120,12,"60x40x90",25,5,https://amazon.co.uk/aqualife-whole-house
+11,MiniPure Travel,portable,19.99,portable,0.5,carbon,no,yes,no,no,no,5,15,2,"12x5x18",0.3,1,https://amazon.co.uk/minipure-travel
+12,HydroPlus Ceramic,countertop,79.99,countertop,7,ceramic-carbon,no,yes,partial,partial,yes,5,30,6,"32x22x42",4,2,https://amazon.co.uk/hydroplus-ceramic
+13,UltraPure RO Plus,reverse_osmosis,279.99,under_sink,90,RO-UV,yes,yes,yes,yes,yes,2,90,6,"42x22x48",14,3,https://amazon.co.uk/ultrapure-ro-plus
+14,EcoDrink Jug,pitcher,29.99,countertop,3,carbon-ion,no,yes,no,no,no,5,20,2,"26x16x32",1.5,1,https://amazon.co.uk/ecodrink-jug
+15,PureHome Complete,under_sink,229.99,under_sink,80,multi-stage,yes,yes,yes,yes,partial,3,70,6,"38x18x42",10,3,https://amazon.co.uk/purehome-complete
