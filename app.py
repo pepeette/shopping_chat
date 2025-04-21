@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from utils.data_loader import load_product_data
 from utils.product_matcher import match_products, format_comparison_table
 from utils.mock_claude import get_mock_response
+from utils.alibaba_scraper import alibaba_search
 
 # Load environment variables
 load_dotenv()
@@ -32,6 +33,8 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
     st.session_state.user_requirements = {}
     st.session_state.recommendations = None
+    st.session_state.user_profile = {}  
+    st.session_state.location_asked = False
     st.session_state.context = {
         "refinement_stage": False,
         "previous_requirements": None
@@ -67,6 +70,16 @@ def get_installation_guide(product_type):
     }
     return guides.get(product_type, "https://www.youtube.com/results?search_query=water+filter+installation")
 
+def update_user_profile(new_data):
+    """Updates the user profile in session state."""
+    st.session_state.user_profile.update(new_data)
+
+def ask_location():
+    """Asks the user for their location and purchasing situation."""
+    location = st.text_input("Where do you live (City, Country)?", key="location_input")
+    ownership = st.selectbox("Do you own your home?", options=["Yes", "No"], key="ownership_input")
+    return location, ownership
+
 # Display chat history
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
@@ -78,6 +91,21 @@ if not st.session_state.messages:
         welcome_message = "Hello! I'm your water filter shopping assistant. I'll help you find the perfect water filtration solution for your needs. How can I assist you today?"
         st.markdown(welcome_message)
     st.session_state.messages.append({"role": "assistant", "content": welcome_message})
+
+# --- LOCATION AND PROFILE COLLECTION ---
+if not st.session_state.location_asked:
+    with st.chat_message("assistant"):
+        location, ownership = ask_location()
+        if location and ownership:
+            update_user_profile({"location": location, "ownership": ownership})
+            st.session_state.location_asked = True
+            st.markdown("Thanks! Knowing your location helps me personalize recommendations.")
+            st.session_state.messages.append({"role": "assistant", "content": "Thanks! Knowing your location helps me personalize recommendations."})
+            st.rerun()  # <--- Use st.rerun() instead of st.experimental_rerun()
+        else:
+            st.markdown("First, could you tell me where you live and if you own your home?")
+            st.session_state.messages.append({"role": "assistant", "content": "First, could you tell me where you live and if you own your home?"})
+            st.stop() # Stop execution until the user provides the data
 
 # Refinement section - show only after recommendations have been made
 if st.session_state.recommendations is not None:
@@ -92,21 +120,21 @@ if st.session_state.recommendations is not None:
             message = "I'm a tenant and cannot drill holes or make permanent modifications. What options would work for me with these limitations?"
             st.session_state.messages.append({"role": "user", "content": message})
             st.session_state.context["refinement_stage"] = True
-            st.experimental_rerun()
+            st.rerun()
     
     with col2:
         if st.button("Water hardness concerns"):
             message = "My water is very hard with lots of limescale. Which of these filters would help with this issue?"
             st.session_state.messages.append({"role": "user", "content": message})
             st.session_state.context["refinement_stage"] = True
-            st.experimental_rerun()
+            st.rerun()
     
     with col3:
         if st.button("Health priorities"):
             message = "I'm actually more concerned about potential bacteria and lead in my water. Could you adjust the recommendations?"
             st.session_state.messages.append({"role": "user", "content": message})
             st.session_state.context["refinement_stage"] = True
-            st.experimental_rerun()
+            st.rerun()
 
 # Chat input
 prompt = st.chat_input("Ask about water filters...")
@@ -119,8 +147,10 @@ if prompt:
     
     # Get response
     with st.spinner("Thinking..."):
+        # Include user profile data in the prompt
+        augmented_prompt = f"{prompt}. My location is {st.session_state.user_profile.get('location', 'unknown')}, and I {'own' if st.session_state.user_profile.get('ownership') == 'Yes' else 'rent'} my home."
         # Use mock Claude instead of the API
-        mock_response = get_mock_response(prompt)
+        mock_response = get_mock_response(augmented_prompt)
         
         # Check if requirements are in the response
         requirements = extract_requirements(mock_response)
@@ -132,8 +162,15 @@ if prompt:
             # Update current requirements
             st.session_state.user_requirements = requirements
             
+            # Search Alibaba
+            alibaba_results_df = alibaba_search(requirements)
+
+            # Combine product dataframes
+            all_products_df = pd.concat([products_df, alibaba_results_df], ignore_index=True)
+
+
             # Match products with requirements
-            matched_products = match_products(products_df, requirements)
+            matched_products = match_products(all_products_df, requirements)
             st.session_state.recommendations = matched_products
             
             # Generate comparison table for top 3 alternatives
@@ -207,11 +244,19 @@ with st.sidebar:
                 "refinement_stage": False,
                 "previous_requirements": None
             }
-            st.experimental_rerun()
+            st.rerun()
     else:
         st.write("No requirements gathered yet. Chat with the assistant to get started!")
     
     # Add information about the project
+    st.markdown("---")
+    st.header("User Profile")
+    if st.session_state.user_profile:
+        st.write(f"Location: {st.session_state.user_profile.get('location', 'Not specified')}")
+        st.write(f"Homeowner: {st.session_state.user_profile.get('ownership', 'Not specified')}")
+    else:
+        st.write("No profile information yet.")
+
     st.markdown("---")
     st.header("About This Project")
     st.markdown("""
