@@ -104,7 +104,7 @@ if not st.session_state.location_asked:
             st.rerun()  # <--- Use st.rerun() instead of st.experimental_rerun()
         else:
             st.markdown("First, could you tell me if you own your home live and where it is located?")
-            st.session_state.messages.append({"role": "assistant", "content": "First, could you tell me if you own your home live and where it is located?"})
+            st.session_state.messages.append({"role": "assistant", "content": "First, could you tell me if you own your home and where it is located?"})
             st.stop() # Stop execution until the user provides the data
 
 # Refinement section - show only after recommendations have been made
