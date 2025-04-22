@@ -76,9 +76,9 @@ def update_user_profile(new_data):
 
 def ask_location():
     """Asks the user for their location and purchasing situation."""
-    location = st.text_input("Where do you live (City, Country)?", key="location_input")
     ownership = st.selectbox("Do you own your home?", options=["Yes", "No"], key="ownership_input")
-    return location, ownership
+    location = st.text_input("Where do you live (City, Country)?", key="location_input")
+    return ownership, location
 
 # Display chat history
 for message in st.session_state.messages:
@@ -103,8 +103,8 @@ if not st.session_state.location_asked:
             st.session_state.messages.append({"role": "assistant", "content": "Thanks! Knowing your location helps me personalize recommendations."})
             st.rerun()  # <--- Use st.rerun() instead of st.experimental_rerun()
         else:
-            st.markdown("First, could you tell me where you live and if you own your home?")
-            st.session_state.messages.append({"role": "assistant", "content": "First, could you tell me where you live and if you own your home?"})
+            st.markdown("First, could you tell me if you own your home live and where it is located?")
+            st.session_state.messages.append({"role": "assistant", "content": "First, could you tell me if you own your home live and where it is located?"})
             st.stop() # Stop execution until the user provides the data
 
 # Refinement section - show only after recommendations have been made
@@ -252,8 +252,8 @@ with st.sidebar:
     st.markdown("---")
     st.header("User Profile")
     if st.session_state.user_profile:
-        st.write(f"Location: {st.session_state.user_profile.get('location', 'Not specified')}")
         st.write(f"Homeowner: {st.session_state.user_profile.get('ownership', 'Not specified')}")
+        st.write(f"Location: {st.session_state.user_profile.get('location', 'Not specified')}")
     else:
         st.write("No profile information yet.")
 
